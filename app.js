@@ -1,53 +1,30 @@
-// Basic Lib Import
-const express =require('express');
-const router =require('./src/routes/api');
-const app= new express();
-const bodyParser =require('body-parser');
+const express = require('express');
+const mongoose = require('mongoose');
+const Product = require("./src/models/productModel");
 
+const app = express();
+app.use(express.json());
 
-// Security Middleware Lib Import
-const rateLimit =require('express-rate-limit');
-const helmet =require('helmet');
-const mongoSanitize =require('express-mongo-sanitize');
-const xss =require('xss-clean');
-const hpp =require('hpp');
-const cors =require('cors');
+// Connect to MongoDB
+mongoose.connect('mongodb+srv://faisal:21031994@cluster0.bnsrejb.mongodb.net/products') 
+// {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true
+// })
+  .then(() => console.log('Connected to MongoDB'))
+  .catch(err => console.error('Failed to connect to MongoDB:', err));
 
-// Database Lib Import
-const mongoose =require('mongoose');
-
-// Body Parser Implement
-app.use(bodyParser.json());
-
-// Request Rate Limit
-const limiter= rateLimit({windowMs:15*60*1000,max:3000});
-app.use(limiter);
-
-
-// Connect to  Mongo DB 
-let URI = "mongodb://127.0.0.1:27017/ToDo";
-let OPTION = { user: "", pass: "", autoIndex:true };
-
-let connectMongo = mongoose.connect(URI, OPTION);
- 
- connectMongo
-.then(() => {   //.then is used to show success message using callback function
-  console.log("Connection Success");
-})
-
-.catch((error) => {  // .catch is used to show error message using callback function
-  console.log("Failed to connect to the database:", error);
+// GET /products route handler
+app.get('/products', async (req, res) => {
+  try {
+    const products = await Product.find({}, 'name price');
+    res.json(products);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to retrieve products' });
+  }
 });
 
-
-//routing Implement
-
-app.use("/api/v1",router);
-
-//Undefined Route
-
-app.use('*',(req,res)=>{
-    res.status(404).json({status:"fail",data:"Not found"})
-})
-
-module.exports=app;
+// Start the server
+app.listen(3000, () => {
+  console.log('Server started on port 3000');
+});

@@ -1,10 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const ProfileController = require("../controllers/ProfileController")
+const productController = require("../controllers/productController")
 
 
-router.post("/CreateProfile", ProfileController.CreateProfile);
-router.post("/UserLogin", ProfileController.UserLogin);
+router.post("/CreateProduct", productController.CreateProduct);
 
 
 
