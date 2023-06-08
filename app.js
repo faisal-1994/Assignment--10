@@ -14,6 +14,15 @@ mongoose.connect('mongodb+srv://faisal:21031994@cluster0.bnsrejb.mongodb.net/pro
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('Failed to connect to MongoDB:', err));
 
+  //routing implement//
+  app.use("api/v1, router");
+
+  // Undefined routes
+
+  app.use('*',(req,res)=>{
+    res.status(404).json({status:"fail", data:"Not found"})
+  })
+
 // GET /products route handler
 app.get('/products', async (req, res) => {
   try {
